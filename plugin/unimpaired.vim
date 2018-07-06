@@ -446,32 +446,6 @@ let g:unimpaired_html_entities = {
 
 " }}}2
 
-function! s:xml_encode(str) abort
-  let str = a:str
-  let str = substitute(str,'&','\&amp;','g')
-  let str = substitute(str,'<','\&lt;','g')
-  let str = substitute(str,'>','\&gt;','g')
-  let str = substitute(str,'"','\&quot;','g')
-  return str
-endfunction
-
-function! s:xml_entity_decode(str) abort
-  let str = substitute(a:str,'\c&#\%(0*38\|x0*26\);','&amp;','g')
-  let str = substitute(str,'\c&#\(\d\+\);','\=nr2char(submatch(1))','g')
-  let str = substitute(str,'\c&#\(x\x\+\);','\=nr2char("0".submatch(1))','g')
-  let str = substitute(str,'\c&apos;',"'",'g')
-  let str = substitute(str,'\c&quot;','"','g')
-  let str = substitute(str,'\c&gt;','>','g')
-  let str = substitute(str,'\c&lt;','<','g')
-  let str = substitute(str,'\C&\(\%(amp;\)\@!\w*\);','\=nr2char(get(g:unimpaired_html_entities,submatch(1),63))','g')
-  return substitute(str,'\c&amp;','\&','g')
-endfunction
-
-function! s:xml_decode(str) abort
-  let str = substitute(a:str,'<\%([[:alnum:]-]\+=\%("[^"]*"\|''[^'']*''\)\|.\)\{-\}>','','g')
-  return s:xml_entity_decode(str)
-endfunction
-
 function! s:Transform(algorithm,type) abort
   let sel_save = &selection
   let cb_save = &clipboard
@@ -526,8 +500,6 @@ call UnimpairedMapTransform('string_encode','[y')
 call UnimpairedMapTransform('string_decode',']y')
 call UnimpairedMapTransform('url_encode','[u')
 call UnimpairedMapTransform('url_decode',']u')
-call UnimpairedMapTransform('xml_encode','[x')
-call UnimpairedMapTransform('xml_decode',']x')
 
 " Section: Activation
 
