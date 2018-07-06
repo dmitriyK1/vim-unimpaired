@@ -354,20 +354,6 @@ call s:map('n', '=p', ":call <SID>putline(']p', 'Below')<CR>=']", '<silent>')
 
 " Section: Encoding and decoding
 
-function! s:string_encode(str) abort
-  let map = {"\n": 'n', "\r": 'r', "\t": 't', "\b": 'b', "\f": '\f', '"': '"', '\': '\'}
-  return substitute(a:str,"[\001-\033\\\\\"]",'\="\\".get(map,submatch(0),printf("%03o",char2nr(submatch(0))))','g')
-endfunction
-
-function! s:string_decode(str) abort
-  let map = {'n': "\n", 'r': "\r", 't': "\t", 'b': "\b", 'f': "\f", 'e': "\e", 'a': "\001", 'v': "\013", "\n": ''}
-  let str = a:str
-  if str =~# '^\s*".\{-\}\\\@<!\%(\\\\\)*"\s*\n\=$'
-    let str = substitute(substitute(str,'^\s*\zs"','',''),'"\ze\s*\n\=$','','')
-  endif
-  return substitute(str,'\\\(\o\{1,3\}\|x\x\{1,2\}\|u\x\{1,4\}\|.\)','\=get(map,submatch(1),submatch(1) =~? "^[0-9xu]" ? nr2char("0".substitute(submatch(1),"^[Uu]","x","")) : submatch(1))','g')
-endfunction
-
 function! s:url_encode(str) abort
   return substitute(a:str,'[^A-Za-z0-9_.~-]','\="%".printf("%02X",char2nr(submatch(0)))','g')
 endfunction
@@ -496,8 +482,6 @@ function! UnimpairedMapTransform(algorithm, key) abort
   endif
 endfunction
 
-call UnimpairedMapTransform('string_encode','[y')
-call UnimpairedMapTransform('string_decode',']y')
 call UnimpairedMapTransform('url_encode','[u')
 call UnimpairedMapTransform('url_decode',']u')
 
