@@ -352,17 +352,6 @@ call s:map('n', '<p', ":call <SID>putline(']p', 'Below')<CR><']", '<silent>')
 call s:map('n', '=P', ":call <SID>putline('[p', 'Above')<CR>=']", '<silent>')
 call s:map('n', '=p', ":call <SID>putline(']p', 'Below')<CR>=']", '<silent>')
 
-" Section: Encoding and decoding
-
-function! s:url_encode(str) abort
-  return substitute(a:str,'[^A-Za-z0-9_.~-]','\="%".printf("%02X",char2nr(submatch(0)))','g')
-endfunction
-
-function! s:url_decode(str) abort
-  let str = substitute(substitute(substitute(a:str,'%0[Aa]\n$','%0A',''),'%0[Aa]','\n','g'),'+',' ','g')
-  return substitute(str,'%\(\x\x\)','\=nr2char("0x".submatch(1))','g')
-endfunction
-
 " HTML entities {{{2
 
 let g:unimpaired_html_entities = {
@@ -481,9 +470,6 @@ function! UnimpairedMapTransform(algorithm, key) abort
     call s:map('n', key.key[0], '<Plug>unimpaired_line_'.a:algorithm)
   endif
 endfunction
-
-call UnimpairedMapTransform('url_encode','[u')
-call UnimpairedMapTransform('url_decode',']u')
 
 " Section: Activation
 
